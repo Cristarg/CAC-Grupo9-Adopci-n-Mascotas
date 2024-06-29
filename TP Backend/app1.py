@@ -2,26 +2,6 @@ import mysql.connector
 
 class Catalogo:
     mascotas = []
-    
-    def __init__(self,host,user,password,database):
-        
-        self.conn = mysql.connector.connect(
-            host = host,
-            user = user,
-            password = password,
-            database = database
-        )
-        self.cursor = self.conn.cursor(dictionary=True)
-        self.cursor.execute('''CREATE DATABASE IF NOT EXISTS miapp;
-            USE miapp;
-            CREATE TABLE IF NOT EXISTS productos (
-            codigo INT AUTO_INCREMENT PRIMARY KEY,
-            nombre VARCHAR (255) NOT Null,
-            edad VARCHAR (255) NOT Null,
-            descripcion VARCHAR(255) NOT NULL,
-            imagen_url VARCHAR(255),
-            ''')
-        self.conn.commit()
 
     def agregar_mascota(self,codigo,nombre,edad,descripcion,imagen):
         if self.consultar_mascota(codigo):
