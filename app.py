@@ -72,8 +72,8 @@ class Catalogo:
         self.conn.commit()
         return self.cursor.rowcount > 0
 
-catalogo = Catalogo(host='localhost', user='root', password='', database='miapp')
-ruta_destino = './static/imagenes/'
+catalogo = Catalogo(host='Sasonador85.mysql.pythonanywhere-services.com', user='Sasonador85', password='root1234', database='Sasonador85$miapp')
+ruta_destino = '/home/Sasonador85/mysite/static/imagenes'
 
 @app.route("/mascotas", methods=["GET"])
 def listar_mascotas():
@@ -87,6 +87,72 @@ def mostrar_mascota(codigo):
         return jsonify(mascota), 201
     else:
         return "Producto no encontrado", 404
+
+@app.route("/mascotas", methods=["POST"])
+def agregar_producto():
+
+    nombre = request.form['nombre']
+    edad = request.form['edad']
+    descripcion = request.form['descripcion']
+    imagen = request.files['imagen']
+    nombre_imagen = ""
+
+    nombre_imagen = secure_filename(imagen.filename)
+    nombre_base, extension = os.path.splitext(nombre_imagen)
+    nombre_imagen = f"{nombre_base}_{int(time.time())}{extension}"
+
+    nuevo_codigo = catalogo.agregar_mascota(nombre, edad, descripcion, nombre_imagen)
+    if nuevo_codigo:
+        imagen.save(os.path.join(ruta_destino, nombre_imagen))
+        return jsonify({"mensaje": "Mascota agregada correctamente.","codigo": nuevo_codigo, "imagen": nombre_imagen}), 201
+    else:
+        return jsonify({"mensaje": "Error al agregar mascota."}), 500
+
+@app.route("/mascotas/<int:codigo>", methods=["PUT"])
+def modificar_mascota(codigo):
+
+    nuevo_nombre = request.form.get("nombre")
+    nueva_edad = request.form.get("edad")
+    nueva_descripcion = request.form.get("descripcion")
+
+    if 'imagen' in request.files:
+        imagen = request.files['imagen']
+        nombre_imagen = secure_filename(imagen.filename)
+        nombre_base, extension = os.path.splitext(nombre_imagen)
+        nombre_imagen = f"{nombre_base}_{int(time.time())}{extension}"
+        imagen.save(os.path.join(ruta_destino, nombre_imagen))
+
+    mascota = catalogo.consultar_mascota(codigo)
+    if mascota:
+        imagen_vieja = mascota["imagen_url"]
+        ruta_imagen = os.path.join(ruta_destino, imagen_vieja)
+        if os.path.exists(ruta_imagen):
+            os.remove(ruta_imagen)
+    else:
+        mascota = catalogo.consultar_mascota(codigo)
+        if mascota:
+            nombre_imagen = mascota["imagen_url"]
+
+    if catalogo.modificar_mascota(codigo, nuevo_nombre, nueva_edad, nueva_descripcion, nombre_imagen):
+        return jsonify({"mensaje": "Mascota modificada"}), 200
+    else:
+        return jsonify({"mensaje": "Mascota no encontrada"}), 403
+
+@app.route("/mascotas/<int:codigo>", methods=["DELETE"])
+def eliminar_mascota(codigo):
+    mascota = catalogo.consultar_mascota(codigo)
+    if mascota:
+        ruta_imagen = os.path.join(ruta_destino, mascota["imagen_url"])
+        if os.path.exists(ruta_imagen):
+            os.remove(ruta_imagen)
+
+        if catalogo.eliminar_mascota(codigo):
+            return jsonify({"mensaje": "Mascota eliminada"}), 200
+        else:
+            return jsonify({"mensaje": "Error al eliminar mascota."}), 500
+
+    else:
+        return jsonify({"mensaje": "Mascota no encontrada"}), 404
 
 if __name__ == "__main__":
     app.run(debug=True)

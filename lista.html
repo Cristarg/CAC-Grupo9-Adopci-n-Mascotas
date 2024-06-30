@@ -41,7 +41,7 @@
     </table><br>
     <a href="menu.html">Menu Principal</a>
     <script>
-        const URL = "http://127.0.0.1:5000/"
+        const URL = "https://Sasonador85.pythonanywhere.com/"
         fetch(URL + 'mascotas')
             .then(function (response){
                 if (response.ok){
@@ -58,7 +58,7 @@
                     '<td>' + mascota.nombre + '</td>' +
                     '<td align="right">' + mascota.edad +
                     '</td>' +'<td align="right">' + mascota.descripcion + '</td>'
-                    + '<td><img src=./static/imagenes/' + mascota.imagen_url + 'alt="Imagen mascota" style="width: 100 px;"></td>';
+                    + '<td><img src=https://www.pythonanywhere.com/user/Sasonador85/files/home/Sasonador85/mysite/static/imagenes' + mascota.imagen_url + 'alt="Imagen mascota" style="width: 100 px;"></td>';
                         tablaMascotas.appendChild(fila);
 }
             })
