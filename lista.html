@@ -45,7 +45,7 @@
         fetch(URL + 'mascotas')
             .then(function (response){
                 if (response.ok){
-                    return response.json
+                    return response.json();
                 } else {
                     throw new Error('Error al obtener la lista de mascotas');
                 }
@@ -54,11 +54,11 @@
                 let tablaMascotas = document.getElementById('tablaMascotas');
                 for (let mascota of data){
                     let fila = document.createElement('tr');
-                    fila.innerHTML = '<td>' + msacota.codigo + '</td>' +
+                    fila.innerHTML = '<td>' + mascota.codigo + '</td>' +
                     '<td>' + mascota.nombre + '</td>' +
                     '<td align="right">' + mascota.edad +
                     '</td>' +'<td align="right">' + mascota.descripcion + '</td>'
-                    + '<td><img src=https://www.pythonanywhere.com/user/Sasonador85/files/home/Sasonador85/mysite/static/imagenes' + mascota.imagen_url + 'alt="Imagen mascota" style="width: 100 px;"></td>';
+                    + '<td><img src="https://www.pythonanywhere.com/user/Sasonador85/files/home/Sasonador85/mysite/static/imagenes' + mascota.imagen_url + '" alt="Imagen mascota" style="width: 100 px;"></td>';
                         tablaMascotas.appendChild(fila);
 }
             })
