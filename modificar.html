@@ -102,7 +102,7 @@
                 document.getElementById('descripcionModif').value = descripcion;
                 const imagenActual = document.getElementById('imagen-actual');
                 if (imagen_url && !imagenSeleccionada) {
-                    imagenActual.src = 'https://https://www.pythonanywhere.com/user/Sasonador85/files/home/Sasonador85/mysite/static/imagenes' + imagen_url;
+                    imagenActual.src = 'https://www.pythonanywhere.com/user/Sasonador85/files/home/Sasonador85/mysite/static/imagenes' + imagen_url;
                     imagenActual.style.display = 'block';
                 } else {
                     imagenActual.style.display = 'none'
@@ -114,7 +114,7 @@
             }
 
             function seleccionarImagen(event){
-            const file = event.target.file[0];
+            const file = event.target.files[0];
             imagenSeleccionada = file;
             imagenUrlTemp = URL.createObjectURL(file);
 
@@ -163,7 +163,7 @@
                 document.getElementById('descripcionModif').value = '';
                 document.getElementById('nuevaImagen').value = '';
 
-                const imagenActual = document.getElementById('iamgen-actual');
+                const imagenActual = document.getElementById('imagen-actual');
 
                 imagenActual.style.display = 'none';
 
