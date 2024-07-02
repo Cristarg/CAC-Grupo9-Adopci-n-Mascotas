@@ -47,9 +47,7 @@
     <script>
         const URL = "https://Sasonador85.pythonanywhere.com/"
 
-        function obtenerMascotas(event) {
-            event.preventDefault();
-            codigo = document.getElementById('codigo').value;
+        function obtenerMascotas() {
             fetch(URL + 'mascotas/')
             .then(response => {
                 if (response.ok){
