@@ -28,7 +28,7 @@
     </header>
 
     <h1>Eliminar Mascotas de la lista</h1><br>
-    <table>
+    <table id="mascotas-table">
         <thead>
             <tr>
                 <th>Código</th>
@@ -38,7 +38,7 @@
                 <th>Acciones</th>
             </tr>
         </thead>
-        <tbody id="mascotas-table">
+        <tbody>
         </tbody>
     </table><br>
 
@@ -48,14 +48,14 @@
         const URL = "https://Sasonador85.pythonanywhere.com/"
 
         function obtenerMascotas() {
-            fetch(URL + 'mascotas/')
+            fetch(URL + 'mascotas')
             .then(response => {
                 if (response.ok){
                     return response.json();
                 }
             })
             .then(data =>{
-                const mascotasTable = document.getElementById('mascotas-table');
+                const mascotasTable = document.getElementById('mascotas-table').getElementsByTagName('tbody')[0];
                 mascotasTable.innerHTML = '';
                 data.forEach(mascota => {
                     const row = mascotasTable.insertRow();
