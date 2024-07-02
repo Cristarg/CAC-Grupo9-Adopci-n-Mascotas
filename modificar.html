@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.11.1/css/all.css">
     <link rel="stylesheet" href="./static/css/style.css">
     <script src="https://kit.fontawesome.com/ff67ccb901.js" crossorigin="anonymous"></script>
-
 </head>
 
 <body>
@@ -20,7 +19,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <header>
-
         <div class="p-0 col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 navestilo d-flex">
             <a class="col-3 col-sm-3 col-md-2 text-dark text-decoration-none  itemnav" href="index.html">PAGINA PRINCIPAL</a>
         </div>
@@ -33,7 +31,7 @@
         <button type="submit">Modificar Mascota</button> <a href="menu.html">Menu Principal</a>
     </form>
 
-    <div id="datos-prodcutos" style="display: none;">
+    <div id="datos-mascota" style="display: none;">
         <h2>Datos de la mascota</h2>
         <form id="form-guardar-cambios">
             <label for="nombreModif">Nombre:</label>
@@ -55,132 +53,137 @@
             <a href="modificar.html">Cancelar</a>
         </form>
     </div>
+
+</body>
+</html>
     <script>
-        const URL = "https://Sasonador85.pythonanywhere.com/"
+        document.addEventListener("DOMContentLoaded", function () {
+    const URL = "https://Sasonador85.pythonanywhere.com/"
 
-        let codigo = '';
-        let nombre = '';
-        let edad = '';
-        let descripcion = '';
-        let imagen_url = '';
-        let imagenSeleccionada = null;
-        let imagenUrlTemp = null;
-        let mostrarDatos = false;
+    let codigo = '';
+    let nombre = '';
+    let edad = '';
+    let descripcion = '';
+    let imagen_url = '';
+    let imagenSeleccionada = null;
+    let imagenUrlTemp = null;
+    let mostrarDatos = false;
 
-        document.getElementById('form-obtener-mascota').addEventListener('submit', obtenerMascota);
-        document.getElementById('form-guardar-cambios').addEventListener('submit', guardarCambios);
-        document.getElementById('nuevaImagen').addEventListener('change', seleccionarImagen);
+    document.getElementById('form-obtener-mascota').addEventListener('submit', obtenerMascota);
+    document.getElementById('form-guardar-cambios').addEventListener('submit', guardarCambios);
+    document.getElementById('nuevaImagen').addEventListener('change', seleccionarImagen);
 
-        function obtenerMascota (event){
-            event.preventDefault();
-            codigo = document.getElementById('codigo').value;
-            fetch(URL + 'mascotas/' + codigo)
-                .then(response => {
-                    if (response.ok){
-                    return response.json()}
-                else  {
-                    throw new Error ('Error al agregar la mascota.')
+    function obtenerMascota(event) {
+        event.preventDefault();
+        codigo = document.getElementById('codigo').value;
+        fetch(URL + 'mascotas/' + codigo)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Error al obtener la mascota.');
                 }
-                })
-                .then(data => {
-                    nombre = data.nombre;
-                    edad = data.edad;
-                    descripcion = data.descripcion;
-                    imagen_url = data.imagen_url;
-                    mostrarDatos = true;
-                    mostrarFormulario();
-                })
-                .catch(error => {
-                alert('Codigo no encontrado');
+            })
+            .then(data => {
+                nombre = data.nombre;
+                edad = data.edad;
+                descripcion = data.descripcion;
+                imagen_url = data.imagen_url;
+                mostrarDatos = true;
+                mostrarFormulario();
+            })
+            .catch(error => {
+                alert('Código no encontrado');
+                console.error(error);
             });
+    }
+
+    function mostrarFormulario() {
+        if (mostrarDatos) {
+            document.getElementById('nombreModif').value = nombre;
+            document.getElementById('edadModif').value = edad;
+            document.getElementById('descripcionModif').value = descripcion;
+            const imagenActual = document.getElementById('imagen-actual');
+            if (imagen_url && !imagenSeleccionada) {
+                imagenActual.src = 'https://www.pythonanywhere.com/user/Sasonador85/files/home/Sasonador85/mysite/static/imagenes/' + imagen_url;
+                imagenActual.style.display = 'block';
+            } else {
+                imagenActual.style.display = 'none'
+            }
+            document.getElementById('datos-mascota').style.display = 'block';
+        } else {
+            document.getElementById('datos-mascota').style.display = 'none';
+        }
+    }
+
+    function seleccionarImagen(event) {
+        const file = event.target.files[0];
+        imagenSeleccionada = file;
+        imagenUrlTemp = URL.createObjectURL(file);
+
+        const imagenVistaPrevia = document.getElementById('imagen-vista-previa');
+        imagenVistaPrevia.src = imagenUrlTemp;
+        imagenVistaPrevia.style.display = 'block';
+    }
+
+    function guardarCambios(event) {
+        event.preventDefault();
+
+        const formData = new FormData();
+        formData.append('codigo', codigo);
+        formData.append('nombre', document.getElementById('nombreModif').value);
+        formData.append('edad', document.getElementById('edadModif').value);
+        formData.append('descripcion', document.getElementById('descripcionModif').value);
+        if (imagenSeleccionada) {
+            formData.append('imagen', imagenSeleccionada, imagenSeleccionada.name);
         }
 
-        function mostrarFormulario() {
-            if (mostrarDatos){
-                document.getElementById('nombreModif').value = nombre;
-                document.getElementById('edadModif').value = edad;
-                document.getElementById('descripcionModif').value = descripcion;
-                const imagenActual = document.getElementById('imagen-actual');
-                if (imagen_url && !imagenSeleccionada) {
-                    imagenActual.src = 'https://www.pythonanywhere.com/user/Sasonador85/files/home/Sasonador85/mysite/static/imagenes/' + imagen_url;
-                    imagenActual.style.display = 'block';
+        fetch(URL + 'mascotas/' + codigo, {
+            method: 'PUT',
+            body: formData,
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
                 } else {
-                    imagenActual.style.display = 'none'
+                    throw new Error('Error al guardar los cambios');
                 }
-                document.getElementById('datos-mascota').style.display = 'block';
-                } else {
-                    document.getElementById('datos-mascota').style.display = 'none';
-                }
-            }
+            })
+            .then(data => {
+                alert('Mascota actualizada correctamente');
+                limpiarForm();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al actualizar la mascota.');
+            });
+    }
 
-            function seleccionarImagen(event){
-            const file = event.target.files[0];
-            imagenSeleccionada = file;
-            imagenUrlTemp = URL.createObjectURL(file);
+    function limpiarForm() {
+        document.getElementById('codigo').value = '';
+        document.getElementById('nombreModif').value = '';
+        document.getElementById('edadModif').value = '';
+        document.getElementById('descripcionModif').value = '';
+        document.getElementById('nuevaImagen').value = '';
 
-            const imagenVistaPrevia = document.getElementById('imagen-vista-previa');
-            imagenVistaPrevia.src = imagenUrlTemp;
-            imagenVistaPrevia.style.display = 'block';
-            }
+        const imagenActual = document.getElementById('imagen-actual');
+        imagenActual.style.display = 'none';
 
-            function guardarCambios(event){
-                event.preventDefault();
+        const imagenVistaPrevia = document.getElementById('imagen-vista-previa');
+        imagenVistaPrevia.style.display = 'none';
 
-                const formData = new FormData();
-                formData.append('codigo', codigo);
-                formData.append('nombre', document.getElementById('nombreModif').value);
-                formData.append('edad', document.getElementById('edadModif').value);
-                formData.append('descripcion', document.getElementById('descripcionModif').value);
-                if (imagenSeleccionada){
-                    formData.append('imagen', imagenSeleccionada, imagenSeleccionada.name);
-                    }
+        codigo = '';
+        nombre = '';
+        edad = '';
+        descripcion = '';
+        imagen_url = '';
+        imagenSeleccionada = null;
+        imagenUrlTemp = null;
+        mostrarDatos = false;
 
-                    fetch(URL + 'mascotas/' + codigo, {
-                        method: 'PUT',
-                        body: formData,
-                    })
-                    .then(response =>{
-                        if (response.ok) {
-                            return response.json()
-                        } else {
-                            throw new Error ('Error al guardar los cambios')
-                        }
-                    })
-                    .then(data =>{
-                        alert('MAscota actualizada correctamnete');
-                        limpiarForm();
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error al actualizar el producto.');
-                    });
-            }
-
-            function limpiarForm(){
-                document.getElementById('codigo').value = '';
-                document.getElementById('nombreModif').value = '';
-                document.getElementById('edadModif').value = '';
-                document.getElementById('descripcionModif').value = '';
-                document.getElementById('nuevaImagen').value = '';
-
-                const imagenActual = document.getElementById('imagen-actual');
-
-                imagenActual.style.display = 'none';
-
-                const imagenVistaPrevia = document.getElementById('imagen-vista-previa');
-                imagenVistaPrevia.style.display = 'none';
-
-                codigo = '';
-                nombre = '';
-                edad = '';
-                descripcion = '';
-                imagen_url = '';
-                imagenSeleccionada = null;
-                imagenUrlTemp = null;
-                mostrarDatos = false;
-
-                document.getElementById('datos-mascota').style.display = 'none';
-                }
+        document.getElementById('datos-mascota').style.display = 'none';
+    }
+});
     </script>
 </body>
 </html>
