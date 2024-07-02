@@ -73,7 +73,7 @@ class Catalogo:
         return self.cursor.rowcount > 0
 
 catalogo = Catalogo(host='Sasonador85.mysql.pythonanywhere-services.com', user='Sasonador85', password='root1234', database='Sasonador85$miapp')
-ruta_destino = '/home/Sasonador85/mysite/static/imagenes'
+ruta_destino = '/home/Sasonador85/mysite/static/imagenes/'
 
 @app.route("/mascotas", methods=["GET"])
 def listar_mascotas():
